@@ -31,4 +31,26 @@ public class FuncionarioController {
     public Funcionario criar(@RequestBody Funcionario funcionario) {
         return funcionarioService.criar(funcionario);
     }
+
+    @GetMapping("/range")
+    public List<Funcionario> obterFuncionariosPorRangeDeIdade(@RequestParam("de") Integer de,
+                                                              @RequestParam("ate") Integer ate){
+        return funcionarioService.obterFuncionariosPorRangeDeIdade(de, ate);
+    }
+
+    @GetMapping("/por-nome")
+    public List<Funcionario> obterFuncionarioPorNome(@RequestParam("nome") String nome) {
+        return funcionarioService.obterFuncionarioPorNome(nome);
+    }
+
+    @PutMapping("/{codigo}")
+    public Funcionario atualizar(@PathVariable("codigo") String codigo,
+                                 @RequestBody Funcionario fucionario) throws IllegalArgumentException {
+        return funcionarioService.atualizar(codigo, fucionario);
+    }
+
+    @DeleteMapping("/{codigo}")
+    public void deletar(@PathVariable("codigo") String codigo) {
+        funcionarioService.deletar(codigo);
+    }
 }

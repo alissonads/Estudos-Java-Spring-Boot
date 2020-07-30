@@ -2,7 +2,7 @@ package br.com.ads.testemongo.SpringMongoDB.service;
 
 import br.com.ads.testemongo.SpringMongoDB.model.Funcionario;
 import br.com.ads.testemongo.SpringMongoDB.repository.FuncionarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +29,36 @@ public class FuncionarioService {
     }
 
     public Funcionario criar(Funcionario funcionario) {
+        Funcionario chefe = this.funcionarioRepository
+                                    .findById(funcionario.getChefe().getCodigo())
+                                    .orElseThrow(() -> new IllegalArgumentException(
+                                            "Chefe não existente."
+                                    ));
+
+        funcionario.setChefe(chefe);
+
         return funcionarioRepository.save(funcionario);
+    }
+
+    public List<Funcionario> obterFuncionariosPorRangeDeIdade(Integer de, Integer ate) {
+        return funcionarioRepository.obterFuncionariosPorRangeDeIdade(de, ate);
+    }
+
+    public List<Funcionario> obterFuncionarioPorNome(String nome) {
+        return funcionarioRepository.findByNome(nome);
+    }
+
+    public Funcionario atualizar(String codigo, Funcionario outro) throws IllegalArgumentException {
+        Funcionario funcionario = this.obterPorCodigo(codigo);
+        funcionario.set(outro);
+
+        funcionarioRepository.save(funcionario);
+        funcionario = this.obterPorCodigo(funcionario.getCodigo());
+        return funcionario;
+    }
+
+    public void deletar(String codigo) {
+        final Funcionario funcionario = this.obterPorCodigo(codigo);
+        funcionarioRepository.delete(funcionario);
     }
 }
