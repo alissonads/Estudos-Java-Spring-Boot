@@ -1,5 +1,6 @@
 package br.com.ads.testemongo.SpringMongoDB.controller;
 
+import br.com.ads.testemongo.SpringMongoDB.exception.FuncionarioNotFoundException;
 import br.com.ads.testemongo.SpringMongoDB.model.Funcionario;
 import br.com.ads.testemongo.SpringMongoDB.service.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/funcionarios")
@@ -51,9 +53,18 @@ public class FuncionarioController {
 
     @PutMapping("/{codigo}")
     public ResponseEntity<Funcionario> atualizar(@PathVariable("codigo") String codigo,
-                                                 @RequestBody Funcionario outro) throws IllegalArgumentException {
+                                                 @RequestBody Funcionario outro) throws FuncionarioNotFoundException {
 
         final Funcionario funcionario = funcionarioService.atualizar(codigo, outro);
+
+        return ResponseEntity.ok(funcionario);
+    }
+
+    @PatchMapping("/{codigo}")
+    public ResponseEntity<Funcionario> atualizarParcial(@PathVariable("codigo") String codigo,
+                                                        @RequestBody Map<String, Object> outro) throws FuncionarioNotFoundException {
+
+        final Funcionario funcionario = funcionarioService.atualizarParcial(codigo, outro);
 
         return ResponseEntity.ok(funcionario);
     }

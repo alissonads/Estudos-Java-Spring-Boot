@@ -14,5 +14,4 @@ public interface FuncionarioRepository extends MongoRepository<Funcionario, Stri
     public List<Funcionario> obterFuncionariosPorRangeDeIdade(Integer de, Integer ate);
 
     public List<Funcionario> findByNome(String nome);
-
 }
