@@ -25,4 +25,6 @@ public class Funcionario {
         salario = (outro.salario == null)? salario : outro.salario;
         chefe = outro.chefe;
     }
+
+
 }

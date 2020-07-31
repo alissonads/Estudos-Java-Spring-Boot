@@ -3,6 +3,8 @@ package br.com.ads.testemongo.SpringMongoDB.controller;
 import br.com.ads.testemongo.SpringMongoDB.model.Funcionario;
 import br.com.ads.testemongo.SpringMongoDB.service.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,11 +25,15 @@ public class FuncionarioController {
     }
 
     @GetMapping("/{codigo}")
-    public Funcionario obterPorCodigo(@PathVariable("codigo") String codigo) {
-        return funcionarioService.obterPorCodigo(codigo);
+    public ResponseEntity<Funcionario> obterPorCodigo(@PathVariable("codigo") String codigo) {
+
+        final Funcionario funcionario = funcionarioService.obterPorCodigo(codigo);
+
+        return ResponseEntity.ok(funcionario);
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Funcionario criar(@RequestBody Funcionario funcionario) {
         return funcionarioService.criar(funcionario);
     }
@@ -44,12 +50,16 @@ public class FuncionarioController {
     }
 
     @PutMapping("/{codigo}")
-    public Funcionario atualizar(@PathVariable("codigo") String codigo,
-                                 @RequestBody Funcionario fucionario) throws IllegalArgumentException {
-        return funcionarioService.atualizar(codigo, fucionario);
+    public ResponseEntity<Funcionario> atualizar(@PathVariable("codigo") String codigo,
+                                                 @RequestBody Funcionario outro) throws IllegalArgumentException {
+
+        final Funcionario funcionario = funcionarioService.atualizar(codigo, outro);
+
+        return ResponseEntity.ok(funcionario);
     }
 
     @DeleteMapping("/{codigo}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletar(@PathVariable("codigo") String codigo) {
         funcionarioService.deletar(codigo);
     }

@@ -1,5 +1,6 @@
 package br.com.ads.testemongo.SpringMongoDB.service;
 
+import br.com.ads.testemongo.SpringMongoDB.exception.FuncionarioNotFoundException;
 import br.com.ads.testemongo.SpringMongoDB.model.Funcionario;
 import br.com.ads.testemongo.SpringMongoDB.repository.FuncionarioRepository;
 import org.springframework.http.ResponseEntity;
@@ -24,18 +25,19 @@ public class FuncionarioService {
         return funcionarioRepository
                     .findById(codigo)
                     .orElseThrow(
-                            () -> new IllegalArgumentException("Funcionario não existe.")
+                            () -> new FuncionarioNotFoundException("Funcionario não existe.")
                     );
     }
 
     public Funcionario criar(Funcionario funcionario) {
-        Funcionario chefe = this.funcionarioRepository
-                                    .findById(funcionario.getChefe().getCodigo())
-                                    .orElseThrow(() -> new IllegalArgumentException(
+        if (funcionario.getChefe() != null) {
+            Funcionario chefe = this.funcionarioRepository
+                                        .findById(funcionario.getChefe().getCodigo())
+                                        .orElseThrow(() -> new FuncionarioNotFoundException(
                                             "Chefe não existente."
-                                    ));
-
-        funcionario.setChefe(chefe);
+                                         ));
+            funcionario.setChefe(chefe);
+        }
 
         return funcionarioRepository.save(funcionario);
     }
@@ -48,7 +50,7 @@ public class FuncionarioService {
         return funcionarioRepository.findByNome(nome);
     }
 
-    public Funcionario atualizar(String codigo, Funcionario outro) throws IllegalArgumentException {
+    public Funcionario atualizar(String codigo, Funcionario outro) throws FuncionarioNotFoundException {
         Funcionario funcionario = this.obterPorCodigo(codigo);
         funcionario.set(outro);
 
@@ -59,6 +61,7 @@ public class FuncionarioService {
 
     public void deletar(String codigo) {
         final Funcionario funcionario = this.obterPorCodigo(codigo);
+
         funcionarioRepository.delete(funcionario);
     }
 }
